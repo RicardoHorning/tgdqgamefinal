@@ -374,7 +374,7 @@
         .field input, .field select, .field textarea {
             width: 100%;
             border: 1px solid var(--senai-border);
-            border-radius: 9px;
+            border-radius: 99px;
             padding: 10px 12px;
             background: #ffffff;
             color: var(--text-dark);
@@ -382,12 +382,12 @@
             font-size: 13.5px;
         }
 
+        .field textarea { border-radius: 9px; min-height: 85px; resize: vertical; }
+
         .field input:focus, .field select:focus, .field textarea:focus {
             border-color: var(--senai-blue);
             box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.15);
         }
-
-        .field textarea { min-height: 85px; resize: vertical; }
 
         .member-row {
             display: grid;
@@ -898,11 +898,9 @@ $('submissionForm').addEventListener('submit', async e => {
             import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js')
         ]);
 
-        if (!app) {
-            app = A.initializeApp(firebaseConfig);
-            auth = T.getAuth(app);
-            db = F.getFirestore(app);
-        }
+        if (!app) app = A.initializeApp(firebaseConfig);
+        if (!auth) auth = T.getAuth(app);
+        if (!db) db = F.getFirestore(app);
 
         const teamKey = $('teamName').value.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-');
         const docRef = F.doc(db, 'submissions', teamKey);
@@ -953,11 +951,15 @@ $('closeAdmin').addEventListener('click', () => $('adminModal').style.display = 
 $('loginForm').addEventListener('submit', async e => {
     e.preventDefault();
     try {
-        const [A, T] = await Promise.all([
+        const [A, T, F] = await Promise.all([
             import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),
-            import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js')
+            import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js'),
+            import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')
         ]);
-        if (!app) { app = A.initializeApp(firebaseConfig); auth = T.getAuth(app); }
+        if (!app) app = A.initializeApp(firebaseConfig);
+        if (!auth) auth = T.getAuth(app);
+        if (!db) db = F.getFirestore(app);
+
         await T.signInWithEmailAndPassword(auth, $('adminEmail').value, $('adminPassword').value);
         $('loginView').classList.add('hidden');
         $('adminView').classList.remove('hidden');
@@ -968,9 +970,25 @@ $('loginForm').addEventListener('submit', async e => {
     }
 });
 
+$('refreshAdmin').addEventListener('click', loadAdmin);
+$('logoutAdmin').addEventListener('click', async () => {
+    if (auth) {
+        const T = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
+        await T.signOut(auth);
+    }
+    $('adminView').classList.add('hidden');
+    $('loginView').classList.remove('hidden');
+});
+
 async function loadAdmin() {
     try {
-        const F = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+        const [A, F] = await Promise.all([
+            import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),
+            import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')
+        ]);
+        if (!app) app = A.initializeApp(firebaseConfig);
+        if (!db) db = F.getFirestore(app);
+
         const snap = await F.getDocs(F.collection(db, 'submissions'));
         const rows = [];
         snap.forEach(d => rows.push({ id: d.id, ...d.data() }));
