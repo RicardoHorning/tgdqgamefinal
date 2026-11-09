@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0e2a47">
+    <title>Desafio Game Dev • Dados | SENAI Afonso Pena</title>
+    <style>
+        :root {
+            --senai-blue: #0056b3;
+            --senai-navy: #0e2a47;
+            --senai-dark: #07192c;
+            --senai-cyan: #00a8ff;
+            --senai-light-blue: #eef5fc;
+            --senai-border: #d0e1f9;
+            --text-dark: #1c2d42;
+            --text-muted: #5a6e85;
+            --bg-main: #f4f7fb;
+            --card-bg: #ffffff;
+            --success-green: #15803d;
+            --warning-amber: #b45309;
+            --danger-red: #b91c1c;
+            --shadow-sm: 0 2px 8px rgba(14, 42, 71, 0.06);
+            --shadow-md: 0 8px 24px rgba(14, 42, 71, 0.12);
+        }
+
+        * { box-sizing: border-box; }
+        
+        body {
+            margin: 0;
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        a { color: var(--senai-blue); text-decoration: none; font-weight: 600; }
+        a:hover { text-decoration: underline; }
+        button, input, select, textarea { font: inherit; }
+        button { cursor: pointer; }
+
+        /* HEADER & NAVBAR */
+        .topbar {
+            background-color: var(--senai-navy);
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            padding: 6px 14px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .logo-box img {
+            max-height: 36px;
+            width: auto;
+            display: block;
+        }
+
+        .logo-fallback {
+            display: none;
+            font-weight: 900;
+            color: var(--senai-blue);
+            font-size: 18px;
+            letter-spacing: 1px;
+        }
+
+        .brand-titles h1 {
+            font-size: 16px;
+            font-weight: 800;
+            margin: 0;
+            color: #ffffff;
+            letter-spacing: 0.03em;
+        }
+
+        .brand-titles small {
+            font-size: 11px;
+            color: var(--senai-cyan);
+            letter-spacing: 0.1em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .wrap {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 24px 20px 60px;
+        }
+
+        /* HERO BANNER AZUL SENAI */
+        .hero {
+            background: linear-gradient(135deg, var(--senai-dark) 0%, var(--senai-navy) 55%, var(--senai-blue) 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+            border-bottom: 4px solid var(--senai-cyan);
+        }
+
+        .eyebrow {
+            font-size: 11px;
+            letter-spacing: 0.18em;
+            font-weight: 800;
+            color: var(--senai-cyan);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .hero h2 {
+            font-size: clamp(26px, 4vw, 38px);
+            line-height: 1.15;
+            margin: 0 0 12px;
+            font-weight: 800;
+        }
+
+        .hero p {
+            max-width: 740px;
+            color: #dbeafe;
+            font-size: 15.5px;
+            margin: 0;
+        }
+
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .chip {
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(4px);
+            border-radius: 99px;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        /* TIMELINE DE 4 HORAS */
+        .time-box {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .time-item {
+            font-size: 12px;
+        }
+
+        .time-item strong {
+            display: block;
+            color: var(--senai-cyan);
+            font-size: 13px;
+        }
+
+        /* LAYOUT & SIDEBAR */
+        .layout {
+            display: grid;
+            grid-template-columns: 240px minmax(0, 1fr);
+            gap: 22px;
+            margin-top: 24px;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 84px;
+            align-self: start;
+            background: var(--card-bg);
+            border: 1px solid var(--senai-border);
+            border-radius: 16px;
+            padding: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .navbtn {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            width: 100%;
+            border: 0;
+            background: transparent;
+            text-align: left;
+            padding: 10px 12px;
+            border-radius: 10px;
+            color: var(--text-dark);
+            font-weight: 650;
+            font-size: 13.5px;
+            transition: all 0.2s ease;
+        }
+
+        .navbtn:hover, .navbtn.active {
+            background: var(--senai-light-blue);
+            color: var(--senai-blue);
+        }
+
+        .navbtn.active { font-weight: 800; }
+
+        .navnum {
+            width: 24px;
+            height: 24px;
+            display: grid;
+            place-items: center;
+            border-radius: 7px;
+            background: #e2eaf4;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--senai-navy);
+        }
+
+        .navbtn.active .navnum {
+            background: var(--senai-blue);
+            color: white;
+        }
+
+        /* PAINÉIS */
+        .panel {
+            display: none;
+            background: var(--card-bg);
+            border: 1px solid var(--senai-border);
+            border-radius: 18px;
+            padding: 26px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .panel.active { display: block; }
+
+        .panel h2 {
+            margin: 0 0 8px;
+            font-size: 22px;
+            color: var(--senai-navy);
+            border-bottom: 2px solid var(--senai-light-blue);
+            padding-bottom: 8px;
+        }
+
+        .lead { color: var(--text-muted); font-size: 14.5px; margin-bottom: 18px; }
+
+        .callout {
+            padding: 14px 16px;
+            border-left: 4px solid var(--senai-cyan);
+            background: var(--senai-light-blue);
+            border-radius: 10px;
+            margin: 16px 0;
+            font-size: 13.5px;
+        }
+
+        .callout.warning {
+            border-left-color: var(--warning-amber);
+            background: #fffbeb;
+            color: #78350f;
+        }
+
+        .callout.success {
+            border-left-color: var(--success-green);
+            background: #f0fdf4;
+            color: #14532d;
+        }
+
+        .grid2 {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .card {
+            border: 1px solid var(--senai-border);
+            border-radius: 12px;
+            padding: 16px;
+            background: var(--card-bg);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .card h3 { margin: 0 0 6px; color: var(--senai-navy); font-size: 15px; }
+        .card .badge {
+            display: inline-block;
+            background: var(--senai-light-blue);
+            color: var(--senai-blue);
+            font-size: 11px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        /* BOTÕES AZUIS */
+        .btn {
+            border: 0;
+            border-radius: 9px;
+            padding: 10px 16px;
+            font-weight: 700;
+            background: var(--senai-blue);
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 13.5px;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .btn:hover { background: #004494; text-decoration: none; }
+
+        .btn.secondary {
+            background: var(--senai-light-blue);
+            color: var(--senai-blue);
+            border: 1px solid var(--senai-border);
+        }
+
+        .btn.secondary:hover { background: #dbeafe; }
+
+        .btn.ghost {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .btn.danger {
+            background: #fef2f2;
+            color: var(--danger-red);
+            border: 1px solid #fca5a5;
+        }
+
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* CAMPOS & FORMULÁRIO */
+        .field { margin: 14px 0; }
+        .field label {
+            display: block;
+            font-weight: 700;
+            font-size: 13px;
+            margin-bottom: 5px;
+            color: var(--senai-navy);
+        }
+
+        .field .help-text {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .field input, .field select, .field textarea {
+            width: 100%;
+            border: 1px solid var(--senai-border);
+            border-radius: 9px;
+            padding: 10px 12px;
+            background: #ffffff;
+            color: var(--text-dark);
+            outline: none;
+            font-size: 13.5px;
+        }
+
+        .field input:focus, .field select:focus, .field textarea:focus {
+            border-color: var(--senai-blue);
+            box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.15);
+        }
+
+        .field textarea { min-height: 85px; resize: vertical; }
+
+        .member-row {
+            display: grid;
+            grid-template-columns: 1fr 40px;
+            gap: 6px;
+            margin: 6px 0;
+        }
+
+        .member-row button {
+            border: 1px solid #fca5a5;
+            border-radius: 8px;
+            background: #fef2f2;
+            color: var(--danger-red);
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .filebox {
+            border: 2px dashed var(--senai-border);
+            border-radius: 12px;
+            padding: 16px;
+            background: var(--senai-light-blue);
+            text-align: center;
+        }
+
+        /* STEPS & PROMPTS */
+        .step { display: flex; gap: 12px; margin: 16px 0; }
+        .stepn {
+            flex: 0 0 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: var(--senai-blue);
+            color: white;
+            display: grid;
+            place-items: center;
+            font-weight: 800;
+            font-size: 13px;
+        }
+        .step h3 { margin: 0 0 2px; font-size: 15px; color: var(--senai-navy); }
+        .step p { margin: 0; color: var(--text-muted); font-size: 13.5px; }
+
+        .prompt {
+            white-space: pre-wrap;
+            background: var(--senai-navy);
+            color: #eef6ff;
+            padding: 16px;
+            border-radius: 12px;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: 12.5px;
+            line-height: 1.55;
+            overflow: auto;
+            border-left: 4px solid var(--senai-cyan);
+        }
+
+        .checklist { list-style: none; padding: 0; }
+        .checklist li { padding: 8px 0; border-bottom: 1px solid var(--senai-border); font-size: 13.5px; }
+
+        .progress {
+            height: 8px;
+            background: var(--senai-light-blue);
+            border-radius: 99px;
+            overflow: hidden;
+            margin: 10px 0;
+            border: 1px solid var(--senai-border);
+        }
+        .progress span {
+            display: block;
+            height: 100%;
+            background: linear-gradient(90deg, var(--senai-blue), var(--senai-cyan));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .footer { text-align: center; color: var(--text-muted); font-size: 12px; padding: 24px 0 10px; }
+        .toast { position: fixed; right: 20px; bottom: 20px; background: var(--senai-navy); color: white; padding: 12px 18px; border-radius: 10px; z-index: 1000; display: none; font-size: 13px; }
+        .modalback { position: fixed; inset: 0; background: rgba(7, 25, 44, 0.75); backdrop-filter: blur(3px); z-index: 500; display: none; align-items: center; justify-content: center; padding: 16px; }
+        .modal { background: white; border-radius: 16px; padding: 24px; max-width: 650px; width: 100%; box-shadow: var(--shadow-md); max-height: 90vh; overflow-y: auto; }
+        .adminbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .hidden { display: none !important; }
+        
+        table { border-collapse: collapse; width: 100%; font-size: 13px; }
+        th, td { text-align: left; padding: 10px; border-bottom: 1px solid var(--senai-border); vertical-align: top; }
+        th { background: var(--senai-light-blue); color: var(--senai-navy); font-weight: 700; }
+
+        @media(max-width: 850px) {
+            .layout { grid-template-columns: 1fr; }
+            .sidebar { position: static; display: flex; overflow-x: auto; gap: 6px; }
+            .navbtn { min-width: max-content; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="topbar">
+    <div class="brand-container">
+        <div class="logo-box">
+            <img src="logo-senai-parana.png" alt="SENAI Paraná" id="senaiLogoImg" onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='block';">
+            <span class="logo-fallback" id="logoFallback">SENAI</span>
+        </div>
+        <div class="brand-titles">
+            <h1>GAME DEV • ASSISTENTE ADMINISTRATIVO</h1>
+            <small>SENAI AFONSO PENA • TGDQ</small>
+        </div>
+    </div>
+    <button class="btn ghost" id="adminOpen">Área do Instrutor</button>
+</header>
+
+<div class="wrap">
+    <section class="hero">
+        <div class="eyebrow">UC: TRATAMENTO E GERENCIAMENTO DE DADOS QUANTITATIVOS</div>
+        <h2>Desafio Game Dev: Crie um Jogo Incrível com IA</h2>
+        <p>Transforme conceitos de estatística e relatórios em um jogo divertido inspirado nos maiores clássicos (como Super Mario, Show do Milhão ou Pac-Man)! Vocês planejam e o Gemini programa.</p>
+        
+        <div class="chips">
+            <span class="chip">👥 Equipes de 3 a 5 alunos</span>
+            <span class="chip">⏱️ Atividade de 4 horas em aula</span>
+            <span class="chip">🎮 Inspiração em Jogos Famosos</span>
+            <span class="chip">🤖 O Gemini faz todo o código</span>
+        </div>
+
+        <div class="time-box">
+            <div class="time-item"><strong>Hora 1: Ideia & Roteiro</strong>Escolha o jogo famoso de inspiração e prepare o planejamento.</div>
+            <div class="time-item"><strong>Hora 2: Criar com Gemini</strong>Copie os prompts turbinados e peça o código completo.</div>
+            <div class="time-item"><strong>Hora 3: Publicar na Web</strong>Suba o arquivo no GitHub Pages com a ajuda do Gemini.</div>
+            <div class="time-item"><strong>Hora 4: Testar & Entregar</strong>Jogue com a equipe e envie o link para o professor.</div>
+        </div>
+    </section>
+
+    <div class="layout">
+        <nav class="sidebar" id="nav">
+            <button class="navbtn active" data-panel="inicio"><span class="navnum">01</span><span>O desafio (4h)</span></button>
+            <button class="navbtn" data-panel="equipe"><span class="navnum">02</span><span>Ideias de Jogos Famosos</span></button>
+            <button class="navbtn" data-panel="planejar"><span class="navnum">03</span><span>Guia de Planejamento</span></button>
+            <button class="navbtn" data-panel="ia"><span class="navnum">04</span><span>Pedir ao Gemini</span></button>
+            <button class="navbtn" data-panel="github"><span class="navnum">05</span><span>Subir no GitHub</span></button>
+            <button class="navbtn" data-panel="testar"><span class="navnum">06</span><span>Testar o jogo</span></button>
+            <button class="navbtn" data-panel="entrega"><span class="navnum">07</span><span>Entregar projeto</span></button>
+        </nav>
+
+        <main class="content">
+            <!-- 01. O DESAFIO -->
+            <section class="panel active" id="panel-inicio">
+                <h2>01. O desafio: Crie o seu Game de Dados</h2>
+                <p class="lead">Vocês serão a equipe de criação de um novo jogo educativo no SENAI Afonso Pena! O objetivo é transformar a UC de Tratamento e Gerenciamento de Dados em um jogo super divertido.</p>
+                <div class="callout success">
+                    <b>💡 A Grande Ideia:</b> Vocês não precisam saber programar! Vocês serão os <b>Game Designers</b> (definem o tema, as fases, os desafios de dados e a história inspirada em um jogo famoso), e a Inteligência Artificial (Gemini) será o <b>Programador</b>.
+                </div>
+                <div class="grid2">
+                    <div class="card">
+                        <span class="badge">ETAPA 1</span>
+                        <h3>📋 Escolher & Planejar</h3>
+                        <p style="margin:0; font-size:13px; color:var(--text-muted);">Escolha um clássico (Super Mario, Show do Milhão, Pac-Man) e adapte para desafios de relatórios e planilhas.</p>
+                    </div>
+                    <div class="card">
+                        <span class="badge">ETAPA 2</span>
+                        <h3>🤖 Gerar com Gemini</h3>
+                        <p style="margin:0; font-size:13px; color:var(--text-muted);">Use os Prompts Turbinados da aba 04. O Gemini cria o código do jogo com cores chamativas e efeitos divertidos.</p>
+                    </div>
+                    <div class="card">
+                        <span class="badge">ETAPA 3</span>
+                        <h3>🌐 Publicar no GitHub</h3>
+                        <p style="margin:0; font-size:13px; color:var(--text-muted);">Suba o arquivo <code>index.html</code> no GitHub Pages para que qualquer pessoa consiga jogar pelo link.</p>
+                    </div>
+                    <div class="card">
+                        <span class="badge">ETAPA 4</span>
+                        <h3>🎤 Campeonato na Aula</h3>
+                        <p style="margin:0; font-size:13px; color:var(--text-muted);">Na próxima aula, a equipe jogará ao vivo na tela da sala e explicará o conteúdo de dados do jogo.</p>
+                    </div>
+                </div>
+                <br>
+                <button class="btn" data-next="equipe">Ver Ideias de Jogos Famosos →</button>
+            </section>
+
+            <!-- 02. EQUIPE E IDEIAS FAMOSAS -->
+            <section class="panel" id="panel-equipe">
+                <h2>02. Ideias de Jogos Famosos adaptados para Dados</h2>
+                <p class="lead">Escolham um estilo de jogo clássico que a equipe goste e adaptem para o mundo administrativo:</p>
+                <div class="grid2">
+                    <div class="card">
+                        <span class="badge" style="background:#fee2e2; color:#991b1b;">ESTILO SUPER MARIO</span>
+                        <h3>🍄 Data Bros: O Resgate do Relatório</h3>
+                        <p style="font-size:13px;">O herói precisa avançar por fases (Fase 1: Erros de Digitação; Fase 2: Interpretação de Gráficos). A cada obstáculo superado ao responder corretamente, ele ganha cogumelos de pontos e chega ao castelo da Diretoria!</p>
+                    </div>
+                    <div class="card">
+                        <span class="badge" style="background:#fef3c7; color:#92400e;">ESTILO SHOW DO MILHÃO</span>
+                        <h3>💰 O Quiz do Milhão Administrativo</h3>
+                        <p style="font-size:13px;">Um jogo de perguntas e respostas valendo 1 Milhão em Pontos de Desempenho! O jogador enfrenta perguntas de média, porcentagens e gráficos, com ajuda da 'Diretoria' ou da 'Planilha Universitária'.</p>
+                    </div>
+                    <div class="card">
+                        <span class="badge" style="background:#dcfce7; color:#166534;">ESTILO PAC-MAN / RETRÔ</span>
+                        <h3>👾 Pac-Data: Caçador de Indicadores</h3>
+                        <p style="font-size:13px;">O jogador precisa 'comer' as respostas certas de metas e porcentagens enquanto desvia dos 'Fantasmas da Inconsistência' (erros de digitação e planilhas desatualizadas).</p>
+                    </div>
+                    <div class="card">
+                        <span class="badge" style="background:#e0f2fe; color:#075985;">ESTILO RPG / QUEST</span>
+                        <h3>🛡️ O Assistente Lendário (Quest da Empresa)</h3>
+                        <p style="font-size:13px;">Um jogo de escolha onde o jogador é um jovem estagiário que precisa resolver mistérios nos dados da empresa para ser promovido a Gerente de Dados!</p>
+                    </div>
+                </div>
+                <br>
+                <button class="btn" data-next="planejar">Ir para o Roteiro de Planejamento →</button>
+            </section>
+
+            <!-- 03. PLANEJAMENTO GUIADO -->
+            <section class="panel" id="panel-planejar">
+                <h2>03. Roteiro Guiado de Planejamento</h2>
+                <p class="lead">Preencham com cuidado este roteiro. Ele será a "receita" que o Gemini usará para criar seu jogo!</p>
+                
+                <div class="field">
+                    <label>1. Nome do Jogo & Estilo Escolhido</label>
+                    <div class="help-text">Dica: Deixe o nome bem chamativo e indique o estilo (ex.: "Super Data Bros: A Jornada das Planilhas" ou "Show do Milhão TGDQ").</div>
+                    <input id="pName" placeholder="Ex.: Super Data Bros - SENAI Edition">
+                </div>
+
+                <div class="field">
+                    <label>2. Tema da UC de Tratamento de Dados</label>
+                    <div class="help-text">Quais assuntos de dados vocês vão testar? (ex.: Erros em tabelas, Média/Mediana, Escolha do gráfico correto, Porcentagem de Vendas).</div>
+                    <input id="pUC" placeholder="Ex.: Identificação de erros em planilhas + Escolha do gráfico certo para diretoria">
+                </div>
+
+                <div class="field">
+                    <label>3. História & Personagem Principal</label>
+                    <div class="help-text">Quem é o jogador? Qual é a missão dele? (ex.: "Você é o Mário Administrador e precisa consertar os dados antes que o Bowser trave o sistema da empresa").</div>
+                    <textarea id="pStory" placeholder="Descreva a história e quem é o personagem do jogo..."></textarea>
+                </div>
+
+                <div class="field">
+                    <label>4. Fase 1: Desafio Inicial (Nível Fácil)</label>
+                    <div class="help-text">Como é a primeira fase? (ex.: O jogador vê uma tabela de compras e precisa encontrar a célula com valor errado para ganhar 100 moedas).</div>
+                    <textarea id="pPhase1" placeholder="Explique o desafio de dados da Fase 1..."></textarea>
+                </div>
+
+                <div class="field">
+                    <label>5. Fase 2: Desafio Avançado (Nível Médio/Chefão)</label>
+                    <div class="help-text">Como é o desafio do "Chefão"? (ex.: A diretoria pede um relatório e o jogador deve escolher entre Gráfico de Linha, Pizza ou Colunas para salvar o dia).</div>
+                    <textarea id="pPhase2" placeholder="Explique o desafio do Chefão / Fase 2..."></textarea>
+                </div>
+
+                <div class="field">
+                    <label>6. Sistema de Pontuação, Vidas e Bônus</label>
+                    <div class="help-text">Como ganha ou perde? (ex.: Começa com 3 vidas / 3 tentativas; ganha 100 pontos por acerto; se errar 3 vezes é Game Over!).</div>
+                    <textarea id="pScore" placeholder="Ex.: 3 Vidas, 100 pontos por acerto, mensagem de Parabéns ao vencer!"></textarea>
+                </div>
+
+                <div class="field">
+                    <label>7. Integrantes da Equipe</label>
+                    <textarea id="pAI" placeholder="Nomes completos dos 3 a 5 alunos da equipe."></textarea>
+                </div>
+                
+                <div class="callout warning">
+                    <b>Atenção:</b> Após preencher, cliquem em <b>"Salvar Planejamento em PDF"</b> ou <b>"Copiar Texto"</b> para enviar ao Gemini na próxima etapa!
+                </div>
+                <button class="btn secondary" id="printPlan">🖨️ Salvar Planejamento em PDF</button> 
+                <button class="btn" id="copyPlan">📋 Copiar Texto do Planejamento</button>
+            </section>
+
+            <!-- 04. IA E PROGRAMAÇÃO -->
+            <section class="panel" id="panel-ia">
+                <h2>04. Pedir o Jogo ao Gemini</h2>
+                <p class="lead">Abra o <a href="https://gemini.google.com" target="_blank">Gemini (gemini.google.com)</a> e envie as duas mensagens abaixo em sequência:</p>
+                
+                <h3>Etapa 1: Apresentar o Roteiro para o Gemini</h3>
+                <div class="prompt" id="promptA">Olá Gemini! Somos alunos do curso de Assistente Administrativo do SENAI Afonso Pena na UC de Tratamento e Gerenciamento de Dados Quantitativos (TGDQ). 
+
+Planejamos um jogo educacional super divertido e gamificado sobre dados administrativos. Por favor, leia nosso planejamento abaixo e me confirme se entendeu a ideia antes de gerar o código:
+
+[COLE AQUI O SEU PLANEJAMENTO COPIADO DA ETAPA 3]</div>
+                <button class="btn secondary copy" data-copy="promptA">Copiar Prompt 1 (Apresentar Ideia)</button>
+
+                <h3 style="margin-top:20px">Etapa 2: Gerar o Código do Jogo + Tutorial de Publicação</h3>
+                <div class="prompt" id="promptB">Perfeito Gemini! Agora gere este jogo completo em um ÚNICO ARQUIVO chamado index.html (com HTML, CSS e JavaScript integrados no mesmo código).
+
+Requisitos Visuais e de Gameplay do Jogo:
+1. DESIGN DIVERTIDO E GAMIFICADO: Use cores vivas, botões grandes e animados, barras de progresso, sistema de Vidas (❤️ ❤️ ❤️) e Placar de Pontos. Inspirar no visual do jogo clássico selecionado.
+2. ESTRUTURA DO JOGO: Tela inicial com história e regras -> Fase 1 (Desafio de Dados Fácil) -> Fase 2 (Desafio de Dados Chefão) -> Tela de Vitória com confetes/animação ou Tela de Game Over com botão de tentar novamente.
+3. CONTEÚDO ADM/DADOS: As perguntas e desafios de planilhas e gráficos devem seguir exatamente o planejamento enviado.
+4. CÓDIGO ÚNICO: Entregue todo o código dentro de um único bloco ```html ... ``` sem depender de arquivos externos de imagem.
+
+IMPORTANTE: Ao final da resposta, após o código, inclua um tutorial em 5 passos bem simples (para quem não é de TI) de como criar o repositório no GitHub e ativar o GitHub Pages.</div>
+                <button class="btn secondary copy" data-copy="promptB">Copiar Prompt 2 (Gerar Jogo Completo)</button>
+            </section>
+
+            <!-- 05. GITHUB -->
+            <section class="panel" id="panel-github">
+                <h2>05. Publicar o Jogo no GitHub</h2>
+                <p class="lead">Siga o passo a passo resumido ou leia as orientações que o próprio Gemini te deu no chat:</p>
+                <div class="step"><div class="stepn">1</div><div><h3>Copie o código do Gemini</h3><p>No chat do Gemini, clique no botão de copiar o código HTML que ele gerou.</p></div></div>
+                <div class="step"><div class="stepn">2</div><div><h3>Crie o arquivo index.html</h3><p>Abra o Bloco de Notas (ou VS Code), cole o código e salve no computador com o nome exato <code>index.html</code>.</p></div></div>
+                <div class="step"><div class="stepn">3</div><div><h3>Abra o GitHub</h3><p>Acesse <a href="https://github.com" target="_blank">github.com</a> e crie um novo repositório <b>Público</b> com o nome do seu jogo.</p></div></div>
+                <div class="step"><div class="stepn">4</div><div><h3>Faça o Upload</h3><p>Clique em <b>Add file > Upload files</b>, arraste o seu arquivo <code>index.html</code> e clique no botão verde <b>Commit changes</b>.</p></div></div>
+                <div class="step"><div class="stepn">5</div><div><h3>Ative o GitHub Pages</h3><p>Vá em <b>Settings > Pages</b>, selecione a branch <b>main / root</b> e clique em <b>Save</b>. Em 2 minutos o jogo estará online!</p></div></div>
+            </section>
+
+            <!-- 06. TESTAR -->
+            <section class="panel" id="panel-testar">
+                <h2>06. Testar e Validar o Jogo</h2>
+                <p class="lead">Jogue o seu próprio jogo pelo link do GitHub Pages e marque o checklist antes da entrega final:</p>
+                <ul class="checklist" id="testChecks">
+                    <li><label><input type="checkbox"> O link do GitHub Pages abre a tela inicial do jogo perfeitamente.</label></li>
+                    <li><label><input type="checkbox"> As perguntas e tabelas sobre dados administrativos estão claras e corretas.</label></li>
+                    <li><label><input type="checkbox"> O placar de pontos e as vidas funcionam ao acertar ou errar.</label></li>
+                    <li><label><input type="checkbox"> É possível avançar até a Fase 2 (Chefão) e ver a tela de vitória/reinício.</label></li>
+                    <li><label><input type="checkbox"> Todos da equipe estão preparados para explicar o jogo na apresentação!</label></li>
+                </ul>
+                <div class="progress"><span id="testProgress"></span></div>
+                <div class="lead" id="testCount" style="font-size:13px; font-weight:bold;">0 de 5 verificações concluídas</div>
+            </section>
+
+            <!-- 07. ENTREGAR -->
+            <section class="panel" id="panel-entrega">
+                <h2>07. Entrega Final da Equipe</h2>
+                <p class="lead">Preencha o formulário oficial para registrar o projeto da equipe no sistema do SENAI Afonso Pena.</p>
+                <form id="submissionForm">
+                    <div class="field"><label>Nome da equipe *</label><input id="teamName" required maxlength="70" placeholder="Ex.: Equipe Data Mario Bros"></div>
+                    <div class="field">
+                        <label>Unidade Curricular *</label>
+                        <input id="ucName" value="Tratamento e Gerenciamento de Dados Quantitativos (TGDQ)" readonly style="background:#eef5fc;">
+                    </div>
+                    <div class="field">
+                        <label>Integrantes da Equipe (1 a 5) *</label>
+                        <div id="members"></div>
+                        <button type="button" class="btn secondary" id="addMember" style="margin-top:6px;">+ Adicionar integrante</button>
+                    </div>
+                    <div class="field"><label>Nome do Jogo *</label><input id="gameName" required maxlength="80" placeholder="Ex.: Super Data Bros - A Jornada do Relatório"></div>
+                    <div class="field"><label>Link do Repositório GitHub *</label><input id="repoUrl" type="url" required placeholder="https://github.com/usuario/nome-do-jogo"></div>
+                    <div class="field"><label>Link do Jogo Publicado (GitHub Pages) *</label><input id="gameUrl" type="url" required placeholder="https://usuario.github.io/nome-do-jogo/"></div>
+                    <div class="field">
+                        <label>Arquivo do Planejamento em PDF (Opcional)</label>
+                        <div class="filebox">
+                            <input id="pdfFile" type="file" accept="application/pdf,.pdf">
+                            <div id="fileInfo" class="lead" style="font-size:12px; margin-top:4px;">Anexe o PDF exportado na Etapa 3 (se tiver salvo).</div>
+                        </div>
+                    </div>
+                    <div class="field"><label>Observações para o Instrutor (opcional)</label><textarea id="teamNote" maxlength="500" placeholder="Qual jogo famoso serviu de inspiração? Como foi a experiência com a IA?"></textarea></div>
+                    <label style="font-size:12px;"><input type="checkbox" id="confirmData" required> Declaramos que a equipe planejou este jogo e está pronta para apresentar na próxima aula.</label>
+                    <br><br>
+                    <button class="btn" type="submit" id="submitBtn">🚀 Enviar Projeto da Equipe</button>
+                    <div id="submitStatus" class="callout hidden"></div>
+                </form>
+                <div id="receipt" class="card hidden" style="margin-top:16px;">
+                    <h3>Entrega Registrada!</h3>
+                    <p id="receiptText"></p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="footer">DESAFIO GAME DEV • CURSO ASSISTENTE ADMINISTRATIVO • SENAI AFONSO PENA</div>
+</div>
+
+<!-- MODAL ÁREA RESTRITA DO INSTRUTOR -->
+<div class="modalback" id="adminModal">
+    <div class="modal">
+        <div class="adminbar">
+            <span style="font-size:11px; font-weight:800; background:var(--senai-light-blue); color:var(--senai-blue); padding:4px 8px; border-radius:6px;">ÁREA DO INSTRUTOR</span>
+            <button class="btn danger" id="closeAdmin">Fechar</button>
+        </div>
+        <div id="loginView" style="margin-top:14px;">
+            <h2 style="font-size:18px; color:var(--senai-navy);">Painel do Instrutor</h2>
+            <form id="loginForm">
+                <div class="field"><label>E-mail administrativo</label><input type="email" id="adminEmail" required></div>
+                <div class="field"><label>Senha</label><input type="password" id="adminPassword" required></div>
+                <button class="btn" type="submit">Entrar</button>
+            </form>
+        </div>
+        <div id="adminView" class="hidden" style="margin-top:14px;">
+            <h2>Entregas Recebidas</h2>
+            <div class="adminbar">
+                <span id="adminUser" style="font-size:12px; color:var(--text-muted);"></span>
+                <button class="btn secondary" id="refreshAdmin">Atualizar</button>
+                <button class="btn danger" id="logoutAdmin">Sair</button>
+            </div>
+            <div id="adminContent" style="margin-top:14px; font-size:13px;">Carregando entregas...</div>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- INTEGRANDO FIREBASE REAIS -->
+<script type="module">
+const firebaseConfig = {
+  apiKey: "AIzaSyA6nr39KIYaiwemLo-hxX0TuDr5mTRYNww",
+  authDomain: "desafio-game-dev-senai.firebaseapp.com",
+  projectId: "desafio-game-dev-senai",
+  storageBucket: "desafio-game-dev-senai.firebasestorage.app",
+  messagingSenderId: "103251083785",
+  appId: "1:103251083785:web:1c9876c213c84ff74aeed8"
+};
+
+let app = null, auth = null, db = null;
+const $ = id => document.getElementById(id);
+
+function toast(msg) {
+    const t = $('toast');
+    t.textContent = msg;
+    t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 4000);
+}
+
+function showPanel(name) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + name));
+    document.querySelectorAll('.navbtn').forEach(b => b.classList.toggle('active', b.dataset.panel === name));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.querySelectorAll('.navbtn').forEach(b => b.addEventListener('click', () => showPanel(b.dataset.panel)));
+document.querySelectorAll('[data-next]').forEach(b => b.addEventListener('click', () => showPanel(b.dataset.next)));
+document.querySelectorAll('.copy').forEach(b => b.addEventListener('click', () => {
+    navigator.clipboard.writeText($(b.dataset.copy).textContent)
+        .then(() => toast('Prompt copiado! Cole no chat do Gemini.'))
+        .catch(() => toast('Erro ao copiar prompt.'));
+}));
+
+/* INTEGRANTES DA EQUIPE */
+const membersContainer = $('members');
+function addMember() {
+    if (membersContainer.children.length >= 5) {
+        toast('Limite de 5 integrantes atingido.');
+        return;
+    }
+    const row = document.createElement('div');
+    row.className = 'member-row';
+    const input = document.createElement('input');
+    input.className = 'memberInput';
+    input.required = true;
+    input.placeholder = 'Nome completo do aluno';
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = '×';
+    btn.addEventListener('click', () => {
+        if (membersContainer.children.length > 1) row.remove();
+        else input.value = '';
+    });
+    row.append(input, btn);
+    membersContainer.append(row);
+}
+addMember();
+$('addMember').addEventListener('click', addMember);
+
+/* TESTES DA EQUIPE */
+document.querySelectorAll('#testChecks input').forEach(c => c.addEventListener('change', () => {
+    const list = [...document.querySelectorAll('#testChecks input')];
+    const checked = list.filter(x => x.checked).length;
+    $('testProgress').style.width = (checked / list.length * 100) + '%';
+    $('testCount').textContent = `${checked} de ${list.length} verificações concluídas`;
+}));
+
+/* PLANEJAMENTO PDF / COPIAR */
+function getPlanText() {
+    return `PLANEJAMENTO DE GAME DEV - ASSISTENTE ADMINISTRATIVO
+` +
+           `SENAI AFONSO PENA • TGDQ
+
+` +
+           `Jogo & Estilo: ${$('pName').value}
+` +
+           `Tema de Dados: ${$('pUC').value}
+` +
+           `História & Personagem: ${$('pStory').value}
+` +
+           `Fase 1 (Inicial): ${$('pPhase1').value}
+` +
+           `Fase 2 (Chefão): ${$('pPhase2').value}
+` +
+           `Pontuação & Vidas: ${$('pScore').value}
+` +
+           `Integrantes: ${$('pAI').value}`;
+}
+
+$('copyPlan').addEventListener('click', () => {
+    navigator.clipboard.writeText(getPlanText())
+        .then(() => toast('Planejamento copiado com sucesso!'))
+        .catch(() => toast('Erro ao copiar.'));
+});
+
+$('printPlan').addEventListener('click', () => {
+    const w = open('', '_blank');
+    if (!w) { toast('Habilite pop-ups para imprimir.'); return; }
+    w.document.write(`<html><head><title>Planejamento Jogo SENAI</title><style>body{font-family:Arial;padding:30px;line-height:1.6;color:#0e2a47}h1{color:#0056b3}p{white-space:pre-wrap}</style></head><body><h1>PLANEJAMENTO GAME DEV - ASSISTENTE ADMINISTRATIVO</h1><h2>SENAI AFONSO PENA</h2><p>${getPlanText()}</p></body></html>`);
+    w.document.close();
+    w.focus();
+    setTimeout(() => w.print(), 400);
+});
+
+/* SUBMISSÃO COM FIREBASE (100% FIRESTORE - SEM MUDANÇAS NO BACKEND) */
+$('pdfFile').addEventListener('change', () => {
+    const f = $('pdfFile').files[0];
+    $('fileInfo').textContent = f ? `${f.name} • ${(f.size / 1048576).toFixed(2)} MB` : 'Nenhum arquivo selecionado.';
+});
+
+$('submissionForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = $('submitBtn'), status = $('submitStatus');
+    status.classList.remove('hidden');
+    status.className = 'callout warning';
+    status.textContent = 'Enviando projeto para o banco de dados...';
+
+    const names = [...document.querySelectorAll('.memberInput')].map(x => x.value.trim()).filter(Boolean);
+    const pdf = $('pdfFile').files[0];
+
+    btn.disabled = true;
+
+    try {
+        const [A, F, T] = await Promise.all([
+            import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),
+            import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js'),
+            import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js')
+        ]);
+
+        if (!app) {
+            app = A.initializeApp(firebaseConfig);
+            auth = T.getAuth(app);
+            db = F.getFirestore(app);
+        }
+
+        const teamKey = $('teamName').value.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-');
+        const docRef = F.doc(db, 'submissions', teamKey);
+        const oldSnap = await F.getDoc(docRef);
+        const proto = oldSnap.exists() ? oldSnap.data().protocol : 'GD-ADM-' + Math.random().toString(36).slice(2,7).toUpperCase();
+        const ver = oldSnap.exists() ? (oldSnap.data().version || 1) + 1 : 1;
+
+        const payload = {
+            protocol: proto,
+            teamName: $('teamName').value.trim(),
+            unit: 'SENAI Afonso Pena - Assistente Administrativo',
+            uc: $('ucName').value,
+            gameName: $('gameName').value.trim(),
+            members: names,
+            repositoryUrl: $('repoUrl').value.trim(),
+            gameUrl: $('gameUrl').value.trim(),
+            pdfName: pdf ? pdf.name : 'Planejamento.pdf',
+            planningText: getPlanText(),
+            note: $('teamNote').value.trim(),
+            version: ver,
+            updatedAt: F.serverTimestamp(),
+            status: 'Recebida'
+        };
+
+        if (!oldSnap.exists()) payload.createdAt = F.serverTimestamp();
+
+        await F.addDoc(F.collection(docRef, 'versions'), { ...payload, submittedAt: F.serverTimestamp() });
+        await F.setDoc(docRef, payload, { merge: true });
+
+        status.className = 'callout success';
+        status.textContent = `Entrega registrada com sucesso! Protocolo: ${proto} (Versão ${ver})`;
+        $('receipt').classList.remove('hidden');
+        $('receiptText').textContent = `Entrega concluída! Guarde seu protocolo: ${proto}. A equipe apresentará este jogo na próxima aula.`;
+
+    } catch (err) {
+        console.error(err);
+        status.className = 'callout warning';
+        status.textContent = 'Erro ao conectar ao banco de dados: ' + (err.message || err.code);
+    } finally {
+        btn.disabled = false;
+    }
+});
+
+/* ÁREA ADMINISTRATIVA */
+$('adminOpen').addEventListener('click', () => $('adminModal').style.display = 'flex');
+$('closeAdmin').addEventListener('click', () => $('adminModal').style.display = 'none');
+
+$('loginForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    try {
+        const [A, T] = await Promise.all([
+            import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),
+            import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js')
+        ]);
+        if (!app) { app = A.initializeApp(firebaseConfig); auth = T.getAuth(app); }
+        await T.signInWithEmailAndPassword(auth, $('adminEmail').value, $('adminPassword').value);
+        $('loginView').classList.add('hidden');
+        $('adminView').classList.remove('hidden');
+        $('adminUser').textContent = auth.currentUser.email;
+        loadAdmin();
+    } catch (err) {
+        toast('Erro de login: ' + err.message);
+    }
+});
+
+async function loadAdmin() {
+    try {
+        const F = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+        const snap = await F.getDocs(F.collection(db, 'submissions'));
+        const rows = [];
+        snap.forEach(d => rows.push({ id: d.id, ...d.data() }));
+        if (!rows.length) { $('adminContent').textContent = 'Nenhuma entrega realizada ainda.'; return; }
+        
+        $('adminContent').innerHTML = '<div style="overflow-x:auto;"><table><thead><tr><th>Equipe / Protocolo</th><th>Integrantes</th><th>Projeto</th><th>Links</th><th>Planejamento</th></tr></thead><tbody>' +
+            rows.map(r => `<tr>
+                <td><b>${r.teamName}</b><br><small>${r.protocol}</small> (v${r.version||1})</td>
+                <td>${(r.members||[]).join('<br>')}</td>
+                <td><b>${r.gameName}</b></td>
+                <td><a href="${r.repositoryUrl}" target="_blank">Repositório</a><br><a href="${r.gameUrl}" target="_blank"><b>Abrir Jogo</b></a></td>
+                <td><button class="btn secondary" style="font-size:11px; padding:4px 8px;" onclick="alert(\`${(r.planningText||'').replace(/`/g, "'")}\`)">Ver Planejamento</button></td>
+            </tr>`).join('') +
+            '</tbody></table></div>';
+    } catch (err) {
+        $('adminContent').textContent = 'Erro ao carregar entregas: ' + err.message;
+    }
+}
+</script>
+</body>
+</html>
